@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 #include <iostream>
-#include "unittest/unittest_util.h"
+#include "third_party/unittest/unittest_util.h"
 using namespace std;
 
 #define TEST_START(TEST_NAME) \
@@ -229,6 +229,6 @@ namespace lightdis {
     }
 }
 
-#include "unittest/unittest_inl.h"
+#include "third_party/unittest/unittest_inl.h"
 #endif
 

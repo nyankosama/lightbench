@@ -1,4 +1,6 @@
+#include <iostream>
+#include "lightbench/base/thread.h"
 
 int main(){
-    //TODO
+    std::cout << "ok" << std::endl;
 }

@@ -20,7 +20,7 @@ namespace lightbench {
         ~Thread();
 
         void start();
-        void join();
+        int join();
 
         pid_t pid() const {
             return *tid_;
@@ -38,7 +38,7 @@ namespace lightbench {
         std::shared_ptr<pid_t> tid_;
         ThreadFunc func_;
         std::string name_;
-        static std::atomic_int numCreaated_;
+        static std::atomic_int numCreated_;
     };
 
     struct ThreadData {
@@ -59,7 +59,5 @@ namespace lightbench {
 
 }
 #endif
-
-
 
 

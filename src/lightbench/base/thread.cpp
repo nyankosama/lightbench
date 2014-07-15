@@ -1,5 +1,5 @@
 #include <atomic>
-#include "thread.h"
+#include "lightbench/base/thread.h"
 
 using namespace lightbench;
 
@@ -26,6 +26,8 @@ namespace lightbench {
     }
 }
 
+std::atomic_int Thread::numCreated_;
+
 Thread::Thread(const ThreadFunc& func, const std::string& n)
     : started_(false),
       joined_(false),
@@ -37,7 +39,7 @@ Thread::Thread(const ThreadFunc& func, const std::string& n)
 }
 
 void Thread::setDefaultName() {
-    int num = ++numCreaated_;
+    int num = ++numCreated_;
     if (name_.empty()) {
         char buf[32];
         snprintf(buf, sizeof buf, "Thread%d", num);
@@ -63,4 +65,10 @@ void Thread::start() {
     }
 }
 
+int Thread::join() {
+    assert(started_);
+    assert(!joined_);
+    joined_ = true;
+    return pthread_join(pthreadId_, NULL);
+}
 
