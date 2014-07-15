@@ -10,7 +10,7 @@ env.StaticLibrary(target = 'base',
         source = Glob(srcDir +'/lightbench/base/*.cpp'),
         CPPPATH = srcDir)
 
-libs = Split('pthread base')
+libs = Split('pthread base boost_program_options')
 libpath = './'
 
 env.Program(target = 'lightbench',
