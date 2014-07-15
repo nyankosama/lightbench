@@ -4,7 +4,6 @@
 #include <string>
 #include <vector>
 #include <iostream>
-#include "base/Singleton.h"
 #include "unittest/unittest_util.h"
 using namespace std;
 
