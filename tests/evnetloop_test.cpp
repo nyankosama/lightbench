@@ -1,5 +1,5 @@
 #include <iostream>
-#include "third_party/unittest/unittest.h"
+#include "unittest/unittest.h"
 #include "lightbench/base/event_loop.h"
 #include "lightbench/base/singleton.h"
 

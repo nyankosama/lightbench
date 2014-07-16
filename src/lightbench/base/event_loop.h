@@ -20,12 +20,6 @@ namespace lightbench {
         EVENT_ERROR
     };
 
-    enum HandlerType {
-        SOCKET_ACCEPTOR,
-        ECHO_HANDLER
-    };
-
-
     class EventHandler {
     public:
         EventHandler(int sockfd, epoll_event event):sockfd_(sockfd),event_(event) {
@@ -43,11 +37,6 @@ namespace lightbench {
     protected:
         int sockfd_;
         epoll_event event_;
-    };
-
-    class EventHandlerFactory {
-    public:
-        std::shared_ptr<EventHandler> createHandler(HandlerType type, int sockfd);
     };
 
     //not thread-safe
@@ -70,4 +59,3 @@ namespace lightbench {
 }
 
 #endif
-

@@ -45,21 +45,6 @@ void EventLoopMgr::removeHandler(int keyfd) {
     handlerTable_.erase(keyfd);
 }
 
-std::shared_ptr<EventHandler> EventHandlerFactory::createHandler(HandlerType type, int sockfd) {
-    /*struct epoll_event event;
-    switch (type) {
-    case SOCKET_ACCEPTOR:
-        event.events = EPOLLIN | EPOLLET;
-        return std::shared_ptr<SocketAcceptor>(new SocketAcceptor(sockfd, event));
-        break;
-    case ECHO_HANDLER:
-        event.events = EPOLLIN | EPOLLET;
-        return std::shared_ptr<EchoHandler>(new EchoHandler(sockfd, event));
-        break;
-    }*/
-    return NULL;
-}
-
 
 int lightbench::makeSocketNonBlocking(int sfd) {
     int flags, s;

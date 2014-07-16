@@ -2,7 +2,14 @@ import os
 import buildUtil as util
 
 srcDir = './src'
+thirdPartyDir = './src/third_party'
 testDir = './tests'
+
+dynamicLibs = Split('pthread boost_program_options')
+staticLibs = [File('./libbase.a'), File('./libmuduo.a')]
+runlibs = list()
+runlibs.extend(staticLibs)
+runlibs.extend(dynamicLibs)
 
 env = Environment(CCFLAGS='-std=c++0x -g')
 
@@ -10,12 +17,15 @@ env.StaticLibrary(target = 'base',
         source = Glob(srcDir +'/lightbench/base/*.cpp'),
         CPPPATH = srcDir)
 
-libs = Split('pthread base boost_program_options')
+env.StaticLibrary(target = 'muduo',
+        source = Glob(thirdPartyDir +'/muduo/base/*.cpp'),
+        CPPPATH = thirdPartyDir)
+
 libpath = './'
 
 env.Program(target = 'lightbench',
         source = Glob(srcDir+'/lightbench/*.cpp'),
-        LIBS=libs,
+        LIBS=runlibs,
         LIBPATH=libpath,
         CPPPATH=srcDir)
 
@@ -28,9 +38,9 @@ for fileName in testSrcList:
     
     testTarget = env.Program(target = testDir + os.path.sep + "_TEST__" + fileName[: fileName.index(".cpp")],
             source = testDir + os.path.sep + fileName,
-            LIBS=libs,
+            LIBS=runlibs,
             LIBPATH=libpath,
-            CPPPATH=srcDir)
+            CPPPATH=[srcDir, thirdPartyDir])
     testList.append(testTarget)
 
 def runTest(target, source, env):

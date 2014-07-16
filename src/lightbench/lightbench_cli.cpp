@@ -10,7 +10,8 @@ int main(int argc, char* argv[]) {
     std::string host;
     std::string port;
     std::string data;
-    int coreNum;
+    int concurrent;
+    int requestNum;
 
     po::options_description desc("Required options");
 
@@ -19,8 +20,8 @@ int main(int argc, char* argv[]) {
     ("host,h", po::value<std::string>(&host), "host ip")
     ("port,p", po::value<std::string>(&port), "port")
     ("data,d", po::value<std::string>(&data), "sended data")
-    ("concurrent,c", po::value<int>(&coreNum), "concurrent connections")
-    ("coreNum,n", po::value<int>(&coreNum), "your cpu core num");
+    ("concurrent,c", po::value<int>(&concurrent), "concurrent connections")
+    ("num,n", po::value<int>(&requestNum), "the number of request to send");
 
     po::variables_map vm;
     po::store(po::command_line_parser(argc, argv).options(desc).run(), vm);
