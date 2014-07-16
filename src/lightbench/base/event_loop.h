@@ -45,20 +45,6 @@ namespace lightbench {
         epoll_event event_;
     };
 
-    class SocketAcceptor : public EventHandler {
-    public:
-        SocketAcceptor(int sockfd, epoll_event event):EventHandler(sockfd, event) {}
-        virtual ~SocketAcceptor() {}
-        void virtual handleEvent(EventType type);
-    };
-
-    class EchoHandler: public EventHandler {
-    public:
-        EchoHandler(int sockfd, epoll_event event):EventHandler(sockfd,event) {}
-        virtual ~EchoHandler() {}
-        void virtual handleEvent(EventType type);
-    };
-
     class EventHandlerFactory {
     public:
         std::shared_ptr<EventHandler> createHandler(HandlerType type, int sockfd);
@@ -84,3 +70,4 @@ namespace lightbench {
 }
 
 #endif
+

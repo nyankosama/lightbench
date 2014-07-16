@@ -1,7 +1,7 @@
 #include <iostream>
 #include "third_party/unittest/unittest.h"
-#include "lightbench/base/EventLoop.h"
-#include "lightbench/base/Singleton.h"
+#include "lightbench/base/event_loop.h"
+#include "lightbench/base/singleton.h"
 
 using namespace lightbench;
 

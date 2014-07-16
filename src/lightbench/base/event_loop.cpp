@@ -2,8 +2,8 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <string.h>
-#include "EventLoop.h"
-#include "Singleton.h"
+#include "event_loop.h"
+#include "singleton.h"
 
 using namespace lightbench;
 
@@ -46,7 +46,7 @@ void EventLoopMgr::removeHandler(int keyfd) {
 }
 
 std::shared_ptr<EventHandler> EventHandlerFactory::createHandler(HandlerType type, int sockfd) {
-    struct epoll_event event;
+    /*struct epoll_event event;
     switch (type) {
     case SOCKET_ACCEPTOR:
         event.events = EPOLLIN | EPOLLET;
@@ -56,47 +56,10 @@ std::shared_ptr<EventHandler> EventHandlerFactory::createHandler(HandlerType typ
         event.events = EPOLLIN | EPOLLET;
         return std::shared_ptr<EchoHandler>(new EchoHandler(sockfd, event));
         break;
-    }
+    }*/
     return NULL;
 }
 
-void SocketAcceptor::handleEvent(EventType type) {
-    struct sockaddr clientAddr;
-    socklen_t len = sizeof(clientAddr);
-    int clientfd;
-
-    clientfd = accept(sockfd_, &clientAddr, &len);
-    int ret = makeSocketNonBlocking(clientfd);
-    if (ret == -1) {
-        std::cerr << "set non-blocking error!" << std::endl;
-        abort();
-    }
-
-    std::shared_ptr<EventHandler> handler = Singleton<EventHandlerFactory>::instance().createHandler(ECHO_HANDLER, clientfd);
-    Singleton<EventLoopMgr>::instance().registerHandler(handler);
-}
-
-void EchoHandler::handleEvent(EventType type) {
-    int n = 0;
-    char buf[512];
-    while ((n = read(sockfd_, buf, sizeof(buf))) != 0) {
-        if (n == -1) {
-            if (errno == EAGAIN) {
-                break;
-            }
-            std::cerr << "echo read error! err=" << strerror(errno) << std::endl;
-            abort();
-        }
-        int ret = write(sockfd_, buf, n);
-        if (ret == -1) {
-            std::cerr << "echo write error! err=" << strerror(errno) <<std::endl;
-            abort();
-        }
-    }
-
-    close(sockfd_);
-    Singleton<EventLoopMgr>::instance().removeHandler(sockfd_);
-}
 
 int lightbench::makeSocketNonBlocking(int sfd) {
     int flags, s;
@@ -116,3 +79,4 @@ int lightbench::makeSocketNonBlocking(int sfd) {
 
     return 0;
 }
+
