@@ -27,7 +27,7 @@ env.Program(target = 'lightbench',
         source = Glob(srcDir+'/lightbench/*.cpp'),
         LIBS=runlibs,
         LIBPATH=libpath,
-        CPPPATH=srcDir)
+        CPPPATH=[srcDir, thirdPartyDir])
 
 #build and run the unittest cases
 testSrcList = os.listdir(testDir)

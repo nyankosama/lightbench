@@ -3,7 +3,6 @@
 #include <sys/socket.h>
 #include <string.h>
 #include "event_loop.h"
-#include "singleton.h"
 
 using namespace lightbench;
 

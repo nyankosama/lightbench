@@ -1,14 +1,13 @@
 #include <iostream>
 #include <boost/program_options/parsers.hpp>
 #include <boost/program_options/variables_map.hpp>
-#include "lightbench/base/thread.h"
 
 namespace po = boost::program_options;
 
 int main(int argc, char* argv[]) {
 
     std::string host;
-    std::string port;
+    int port;
     std::string data;
     int concurrent;
     int requestNum;
@@ -18,7 +17,7 @@ int main(int argc, char* argv[]) {
     desc.add_options()
     ("help", "produce help meesage")
     ("host,h", po::value<std::string>(&host), "host ip")
-    ("port,p", po::value<std::string>(&port), "port")
+    ("port,p", po::value<int>(&port), "port")
     ("data,d", po::value<std::string>(&data), "sended data")
     ("concurrent,c", po::value<int>(&concurrent), "concurrent connections")
     ("num,n", po::value<int>(&requestNum), "the number of request to send");

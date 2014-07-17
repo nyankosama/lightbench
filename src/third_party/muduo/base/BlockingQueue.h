@@ -69,6 +69,11 @@ class BlockingQueue : boost::noncopyable
     return queue_.size();
   }
 
+  void clear()
+  {
+    queue_.clear();
+  }
+
  private:
   mutable MutexLock mutex_;
   Condition         notEmpty_;
