@@ -4,6 +4,7 @@
 #include <arpa/inet.h>
 #include <iostream>
 #include <string.h>
+#include <boost/bind.hpp>
 #include "lightbench/lightbench_manager.h"
 #include "muduo/base/Thread.h"
 #include "muduo/base/Singleton.h"
@@ -12,6 +13,17 @@
 
 using namespace lightbench;
 
+void eventLoop(LightbenchManager::mgrPtr& mgr) {
+    mgr->handleEvent();
+}
+
+std::shared_ptr<EventHandler> createReadServerHandler(int sockfd, std::shared_ptr<EventLoopMgr> mgr, LightbenchManager::pvQueuePtr pvQueue){
+    epoll_event event;
+    event.events = EPOLLIN | EPOLLET;
+    std::shared_ptr<EventHandler> hdr(new ReadServerHandler(sockfd, event, mgr, pvQueue));
+    return hdr;
+}
+
 LightbenchManager::LightbenchManager(const std::string& host, int port, int coreNum)
     :host_(host),
      port_(port),
@@ -19,7 +31,7 @@ LightbenchManager::LightbenchManager(const std::string& host, int port, int core
      pvQueue_(new muduo::BlockingQueue<int>()) {
     for (int i = 0; i < coreNum_; i++) {
         mgrPtr mgr(new EventLoopMgr());
-        mgrTable_.push_back(mgr);
+        mgrTable_->push_back(mgr);
     }
 }
 
@@ -43,6 +55,7 @@ void LightbenchManager::connectServer(
     int len = sizeof(addr);
 
     for (int i = 0; i < reqNum; i++) {
+        pvQueue_->take();
         int clientfd = socket(AF_INET, SOCK_STREAM, 0);
         int ret = connect(clientfd, (struct sockaddr *)&addr, len);
         if (ret == -1) {
@@ -50,8 +63,9 @@ void LightbenchManager::connectServer(
             abort();
         }
 
-        mgrPtr mgr = mgrTable_[i%coreNum_];
-        std::shared_ptr<EventHandler> hdr = muduo::Singleton<EventHandlerFactory>::instance().createHandler(READ_PRINT_HANDLER, clientfd);
+        mgrPtr mgr = (*mgrTable_)[i%coreNum_];
+
+        std::shared_ptr<EventHandler> hdr = createReadServerHandler(clientfd, mgr, pvQueue_);
         mgr->registerHandler(hdr);
 
         const char* buf = data.c_str();
@@ -64,10 +78,6 @@ void LightbenchManager::connectServer(
     }
 }
 
-void LightbenchManager::eventLoop() {
-
-}
-
 int LightbenchManager::startBench(const std::string& data, int concurrentNum, int reqNum) {
     //TODO
     return 0;
@@ -76,8 +86,5 @@ int LightbenchManager::startBench(const std::string& data, int concurrentNum, in
 void LightbenchManager::report() {
     //TODO
 }
-
-
-
 
 

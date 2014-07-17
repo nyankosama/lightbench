@@ -22,15 +22,16 @@ namespace lightbench {
         int startBench(const std::string& data, int concurrentNum, int reqNum);
         void report();
 
-    private:
+        //do not call the following member functions
         void connectServer(int concurrentNum, int reqNum, const std::string& data);
-        void eventLoop();
+
+    private:
         void initPvQueue(int concurrentNum);
 
     private:
         std::string host_;
         int port_;
-        std::vector<mgrPtr> mgrTable_;
+        std::shared_ptr<std::vector<mgrPtr> > mgrTable_;
         int coreNum_;
         pvQueuePtr pvQueue_; 
     };

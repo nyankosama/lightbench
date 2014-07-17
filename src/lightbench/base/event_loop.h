@@ -7,6 +7,7 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <map>
+#include <boost/function.hpp>
 
 #define MAX_EVENTS 512
 
@@ -22,7 +23,9 @@ namespace lightbench {
 
     class EventHandler {
     public:
-        EventHandler(int sockfd, epoll_event event):sockfd_(sockfd),event_(event) {
+        EventHandler(int sockfd, epoll_event event)
+            :sockfd_(sockfd),
+             event_(event){
             event_.data.fd = sockfd;
         }
         virtual ~EventHandler() {};
