@@ -12,7 +12,7 @@
 
 using namespace lightbench;
 
-void eventLoop(LightbenchManager::mgrPtr& mgr) {
+void eventLoop(LightbenchManager::mgrPtr mgr) {
     int ret = 0;
     while (true){
         ret = mgr->handleEvent(5000);
@@ -34,12 +34,7 @@ LightbenchManager::LightbenchManager(const std::string& host, int port, int core
     :host_(host),
      port_(port),
      coreNum_(coreNum),
-     pvQueue_(new muduo::BlockingQueue<int>()) {
-    for (int i = 0; i < coreNum_; i++) {
-        mgrPtr mgr(new EventLoopMgr());
-        mgrTable_->push_back(mgr);
-    }
-}
+     pvQueue_(new muduo::BlockingQueue<int>()) {}
 
 void LightbenchManager::initPvQueue(int concurrentNum) {
     pvQueue_ = pvQueuePtr(new muduo::BlockingQueue<int>());
@@ -69,10 +64,11 @@ void LightbenchManager::connectServer(
             abort();
         }
 
-        mgrPtr mgr = (*mgrTable_)[i%coreNum_];
+        mgrPtr mgr = mgrTable_[i%coreNum_];
 
         std::shared_ptr<EventHandler> hdr = createReadServerHandler(clientfd, mgr, pvQueue_);
         mgr->registerHandler(hdr);
+        std::cout << "register hdr" << std::endl;
 
         const char* buf = data.c_str();
         int dataLen = data.size();
@@ -81,8 +77,9 @@ void LightbenchManager::connectServer(
             std::cerr <<  "client write error: " << strerror(errno) << std::endl;
             abort();
         }
+        std::cout << "send data to server" << std::endl;
     }
-    for (auto mgr : *mgrTable_){
+    for (auto mgr : mgrTable_){
         mgr->disable(); 
     }
 }
@@ -91,14 +88,17 @@ int LightbenchManager::startBench(const std::string& data, int concurrentNum, in
     threadVector threadList;
     for (int i = 0; i < coreNum_; i++){
         mgrPtr mgr(new EventLoopMgr());
-        mgrTable_->push_back(mgr);
+        mgrTable_.push_back(mgr);
         boost::function<void ()> eventFunc = boost::bind(eventLoop, mgr);
         std::shared_ptr<muduo::Thread> thread(new muduo::Thread(eventFunc));
         threadList.push_back(thread);
+        std::cout << "thread start" << std::endl;
         thread->start();
     }
+
     boost::function<void ()> connectFunc = boost::bind(&LightbenchManager::connectServer, this, concurrentNum, reqNum, data);
     std::shared_ptr<muduo::Thread> connectThread(new muduo::Thread(connectFunc));
+    connectThread->start();
 
     //thread join
     std::cout << "thread join" << std::endl;

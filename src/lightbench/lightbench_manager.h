@@ -5,13 +5,14 @@
 #include <iostream>
 #include <vector>
 #include <memory>
+#include <boost/noncopyable.hpp>
 #include "lightbench/base/event_loop.h"
 #include "muduo/base/BlockingQueue.h"
 #include "muduo/base/Thread.h"
 
 namespace lightbench {
 
-    class LightbenchManager {
+    class LightbenchManager : boost::noncopyable{
     public:
         typedef std::shared_ptr<EventLoopMgr> mgrPtr;
         typedef std::shared_ptr<muduo::BlockingQueue<int> > pvQueuePtr;
@@ -33,7 +34,7 @@ namespace lightbench {
     private:
         std::string host_;
         int port_;
-        std::shared_ptr<std::vector<mgrPtr> > mgrTable_;
+        std::vector<mgrPtr>  mgrTable_;
         int coreNum_;
         pvQueuePtr pvQueue_; 
     };

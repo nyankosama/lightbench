@@ -21,10 +21,11 @@ int EventLoopMgr::handleEvent(int timeout) {
         return FAIL;
     }
     int n;
+    std::cout << "epoll_wait start" << std::endl;
     n = epoll_wait(efd_, events_, MAX_EVENTS, timeout);
     if (n == 0){
         //timeout
-        std::cout << "mgr timeout!" << std::endl;
+        std::cout << "mgr timeout!, table size=" << handlerTable_.size() << std::endl;
         for (mapIter iter = handlerTable_.begin(); iter != handlerTable_.end(); ++iter){ 
             iter->second->handleEvent(EventType::EVENT_CLOSE);
         }

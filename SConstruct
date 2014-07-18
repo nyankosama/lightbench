@@ -11,7 +11,7 @@ runlibs = list()
 runlibs.extend(staticLibs)
 runlibs.extend(dynamicLibs)
 
-env = Environment(CCFLAGS='-std=c++0x -g')
+env = Environment(CCFLAGS='-std=c++0x -g -p -Wall -O0')
 
 env.StaticLibrary(target = 'base',
         source = Glob(srcDir +'/lightbench/base/*.cpp'),
