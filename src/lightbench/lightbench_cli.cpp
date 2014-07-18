@@ -11,7 +11,7 @@ int main(int argc, char* argv[]) {
     std::string host = "127.0.0.1";
     int port = 9123;
     std::string data = "haha";
-    int concurrent = 10;
+    int concurrent = 1000;
     int requestNum = 10;
     int coreNum = 1;
 

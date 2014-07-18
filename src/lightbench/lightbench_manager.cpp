@@ -5,6 +5,8 @@
 #include <iostream>
 #include <string.h>
 #include <boost/bind.hpp>
+#include <assert.h>
+#include <unistd.h>
 #include "lightbench/lightbench_manager.h"
 #include "muduo/base/Singleton.h"
 #include "lightbench/base/event_loop.h"
@@ -40,6 +42,8 @@ void LightbenchManager::initPvQueue(int concurrentNum) {
     pvQueue_ = pvQueuePtr(new muduo::BlockingQueue<int>());
     for (int i = 0; i < concurrentNum; i++)
         pvQueue_->put(1);
+
+    assert(pvQueue_->size() == (size_t)concurrentNum);    
 }
 
 void LightbenchManager::connectServer(
@@ -56,28 +60,30 @@ void LightbenchManager::connectServer(
     int len = sizeof(addr);
 
     for (int i = 0; i < reqNum; i++) {
-        pvQueue_->take();
+        //pvQueue_->take();
         int clientfd = socket(AF_INET, SOCK_STREAM, 0);
         int ret = connect(clientfd, (struct sockaddr *)&addr, len);
         if (ret == -1) {
             std::cerr <<  "connect error: " << strerror(errno) << std::endl;
             abort();
         }
-
+        //makeSocketNonBlocking(clientfd);
+        //makeSocketSync(clientfd);
+        
         mgrPtr mgr = mgrTable_[i%coreNum_];
 
         std::shared_ptr<EventHandler> hdr = createReadServerHandler(clientfd, mgr, pvQueue_);
         mgr->registerHandler(hdr);
-        std::cout << "register hdr" << std::endl;
 
         const char* buf = data.c_str();
         int dataLen = data.size();
-        ret = write(clientfd, buf, dataLen);
+        ret = send(clientfd, buf, dataLen, 0);
         if (ret != dataLen) {
             std::cerr <<  "client write error: " << strerror(errno) << std::endl;
             abort();
         }
-        std::cout << "send data to server" << std::endl;
+        std::cout << "send data to server, sockfd=" << clientfd << std::endl;
+
     }
     for (auto mgr : mgrTable_){
         mgr->disable(); 

@@ -8,6 +8,7 @@
 #include <fcntl.h>
 #include <map>
 #include <boost/function.hpp>
+#include "muduo/base/Mutex.h"
 
 #define MAX_EVENTS 512
 
@@ -65,10 +66,12 @@ namespace lightbench {
         int efd_;
         std::map<int, std::shared_ptr<EventHandler> > handlerTable_;
         bool isAcitive_;
+        muduo::MutexLock mutexLock_;
     };
 
     //utils
     int makeSocketNonBlocking(int sfd);
+    int makeSocketSync(int sfd);
 }
 
 #endif

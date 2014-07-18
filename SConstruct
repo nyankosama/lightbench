@@ -15,7 +15,7 @@ env = Environment(CCFLAGS='-std=c++0x -g -p -Wall -O0')
 
 env.StaticLibrary(target = 'base',
         source = Glob(srcDir +'/lightbench/base/*.cpp'),
-        CPPPATH = srcDir)
+        CPPPATH = [srcDir, thirdPartyDir])
 
 env.StaticLibrary(target = 'muduo',
         source = Glob(thirdPartyDir +'/muduo/base/*.cpp'),
