@@ -8,7 +8,7 @@ void ReadServerHandler::handleEvent(EventType type) {
     if (type == EventType::EVENT_CLOSE) {
         mgr_->removeHandler(sockfd_);
         close(sockfd_);
-        //pvQueue_->put(1);
+        pvQueue_->put(1);
         return;
     }
 
@@ -27,9 +27,9 @@ void ReadServerHandler::handleEvent(EventType type) {
         std::cout << "receive from clientfd =" << sockfd_ << ", str=" << buf << std::endl;
 
     }
-    //close(sockfd_);
     mgr_->removeHandler(sockfd_);
-    //pvQueue_->put(1);
+    close(sockfd_);
+    pvQueue_->put(1);
 }
 
 

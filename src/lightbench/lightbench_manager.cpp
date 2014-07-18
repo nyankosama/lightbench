@@ -60,7 +60,7 @@ void LightbenchManager::connectServer(
     int len = sizeof(addr);
 
     for (int i = 0; i < reqNum; i++) {
-        //pvQueue_->take();
+        pvQueue_->take();
         int clientfd = socket(AF_INET, SOCK_STREAM, 0);
         int ret = connect(clientfd, (struct sockaddr *)&addr, len);
         if (ret == -1) {
@@ -120,5 +120,4 @@ int LightbenchManager::startBench(const std::string& data, int concurrentNum, in
 void LightbenchManager::report() {
     //TODO
 }
-
 
