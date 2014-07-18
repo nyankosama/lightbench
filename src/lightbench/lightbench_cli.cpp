@@ -1,8 +1,10 @@
 #include <iostream>
 #include <boost/program_options/parsers.hpp>
 #include <boost/program_options/variables_map.hpp>
+#include "lightbench/lightbench_manager.h"
 
 namespace po = boost::program_options;
+using namespace lightbench;
 
 int main(int argc, char* argv[]) {
 
@@ -11,6 +13,7 @@ int main(int argc, char* argv[]) {
     std::string data;
     int concurrent;
     int requestNum;
+    int coreNum = 4;
 
     po::options_description desc("Required options");
 
@@ -37,6 +40,9 @@ int main(int argc, char* argv[]) {
         std::cout << desc << std::endl;
         exit(0);
     }
-
-    //TODO one thread for create connections, corenum threads for eventloop of reading echo data from server.
+    
+    std::cout << "create manager" << std::endl;
+    LightbenchManager mgr(host, port, coreNum);
+    mgr.startBench(data, concurrent, requestNum);
+    std::cout << "complete!" << std::endl;
 }

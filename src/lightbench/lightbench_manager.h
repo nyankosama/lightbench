@@ -7,6 +7,7 @@
 #include <memory>
 #include "lightbench/base/event_loop.h"
 #include "muduo/base/BlockingQueue.h"
+#include "muduo/base/Thread.h"
 
 namespace lightbench {
 
@@ -14,6 +15,7 @@ namespace lightbench {
     public:
         typedef std::shared_ptr<EventLoopMgr> mgrPtr;
         typedef std::shared_ptr<muduo::BlockingQueue<int> > pvQueuePtr;
+        typedef std::vector<std::shared_ptr<muduo::Thread> > threadVector;
 
     public:
         LightbenchManager(const std::string& host, int port, int coreNum);

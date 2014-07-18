@@ -21,11 +21,16 @@ namespace lightbench {
         EVENT_ERROR
     };
 
+    enum ReturnStatus {
+        FAIL = 0,
+        SUCCESS = 1
+    };
+
     class EventHandler {
     public:
         EventHandler(int sockfd, epoll_event event)
             :sockfd_(sockfd),
-             event_(event){
+             event_(event) {
             event_.data.fd = sockfd;
         }
         virtual ~EventHandler() {};
@@ -45,16 +50,21 @@ namespace lightbench {
     //not thread-safe
     class EventLoopMgr {
     public:
+        typedef std::map<int, std::shared_ptr<EventHandler> >::iterator mapIter;
+
+    public:
         EventLoopMgr();
         virtual ~EventLoopMgr();
-        void handleEvent();
+        int handleEvent(int timeout = -1);
         void registerHandler(std::shared_ptr<EventHandler>& handler);
         void removeHandler(int keyfd);
+        void disable(){isAcitive_ = false;}
 
     private:
         epoll_event*  events_;
         int efd_;
         std::map<int, std::shared_ptr<EventHandler> > handlerTable_;
+        bool isAcitive_;
     };
 
     //utils
@@ -62,3 +72,4 @@ namespace lightbench {
 }
 
 #endif
+

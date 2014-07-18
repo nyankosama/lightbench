@@ -6,7 +6,7 @@
 
 using namespace lightbench;
 
-EventLoopMgr::EventLoopMgr() {
+EventLoopMgr::EventLoopMgr():isAcitive_(true) {
     events_ = new epoll_event[MAX_EVENTS];
     efd_ = epoll_create(1);
 }
@@ -15,9 +15,20 @@ EventLoopMgr::~EventLoopMgr() {
     delete events_;
 }
 
-void EventLoopMgr::handleEvent() {
+int EventLoopMgr::handleEvent(int timeout) {
+    if (!isAcitive_ && handlerTable_.size() == 0){
+        std::cout << "handleEvent return" << std::endl; 
+        return FAIL;
+    }
     int n;
-    n = epoll_wait(efd_, events_, MAX_EVENTS, -1);
+    n = epoll_wait(efd_, events_, MAX_EVENTS, timeout);
+    if (n == 0){
+        //timeout
+        std::cout << "mgr timeout!" << std::endl;
+        for (mapIter iter = handlerTable_.begin(); iter != handlerTable_.end(); ++iter){ 
+            iter->second->handleEvent(EventType::EVENT_CLOSE);
+        }
+    }
     for (int i = 0; i < n; i++) {
         if ((events_[i].events & EPOLLERR) ||
                 (events_[i].events & EPOLLHUP) ||
@@ -29,6 +40,7 @@ void EventLoopMgr::handleEvent() {
         std::shared_ptr<EventHandler> handler = handlerTable_[events_[i].data.fd];
         handler->handleEvent(EVENT_READ);
     }
+    return SUCCESS;
 }
 
 void EventLoopMgr::registerHandler(std::shared_ptr<EventHandler>& handler) {
