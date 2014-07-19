@@ -6,16 +6,12 @@ thirdPartyDir = './src/third_party'
 testDir = './tests'
 
 dynamicLibs = Split('pthread boost_program_options')
-staticLibs = [File('./libbase.a'), File('./libmuduo.a')]
+staticLibs = [File('./libmuduo.a')]
 runlibs = list()
 runlibs.extend(staticLibs)
 runlibs.extend(dynamicLibs)
 
 env = Environment(CCFLAGS='-std=c++0x -g -p -Wall -O0')
-
-env.StaticLibrary(target = 'base',
-        source = Glob(srcDir +'/lightbench/base/*.cpp'),
-        CPPPATH = [srcDir, thirdPartyDir])
 
 env.StaticLibrary(target = 'muduo',
         source = Glob(thirdPartyDir +'/muduo/base/*.cpp'),
@@ -28,6 +24,9 @@ env.Program(target = 'lightbench',
         LIBS=runlibs,
         LIBPATH=libpath,
         CPPPATH=[srcDir, thirdPartyDir])
+
+env.Program(target = 'server', source = srcDir + '/lightbench/testserver/server.cpp',CPPPATH=[srcDir, thirdPartyDir])
+
 
 #build and run the unittest cases
 testSrcList = os.listdir(testDir)
