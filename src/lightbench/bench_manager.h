@@ -9,6 +9,7 @@
 #include <atomic>
 #include "muduo/base/BlockingQueue.h"
 #include "muduo/base/Thread.h"
+#include "muduo/base/Mutex.h"
 
 namespace lightbench {
 
@@ -27,12 +28,22 @@ namespace lightbench {
 
     private:
         void initPvQueue(int concurrentNum);
+        void record(int costTime, int reqNum);
 
     private:
-        std::atomic_int count_;
         std::string host_;
         int port_;
         int coreNum_;
+        int totalReqNum_;
+
+    private:
+        //statistic
+        std::atomic_int minRespTime_;
+        std::atomic_int maxRespTime_;
+        std::atomic_int totalRespTime_;
+        std::atomic_int completedCount_;
+        int totalPassTime_;
+        muduo::MutexLock lock_;
     };
 
 }

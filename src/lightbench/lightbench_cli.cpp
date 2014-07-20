@@ -1,7 +1,7 @@
 #include <iostream>
 #include <boost/program_options/parsers.hpp>
 #include <boost/program_options/variables_map.hpp>
-#include "lightbench/lightbench_manager.h"
+#include "lightbench/bench_manager.h"
 
 namespace po = boost::program_options;
 using namespace lightbench;
@@ -12,7 +12,7 @@ int main(int argc, char* argv[]) {
     int port;
     std::string data;
     int requestNum;
-    int coreNum = 4;
+    int coreNum = 2;
 
     po::options_description desc("Required options");
 
@@ -39,8 +39,7 @@ int main(int argc, char* argv[]) {
         exit(0);
     }
     
-    std::cout << "create manager" << std::endl;
     LightbenchManager mgr(host, port, coreNum);
     mgr.startBench(data, requestNum);
-    std::cout << "complete!" << std::endl;
+    mgr.report();
 }
