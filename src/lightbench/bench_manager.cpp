@@ -65,14 +65,14 @@ void LightbenchManager::benchmark(
         }
 
         int endTime = getCurrentTimeUsec();
-        record(endTime - beginTime, reqNum);
+        record(endTime - beginTime);
 
         //std::cout << "read data from server, id=" << completedCount_ << std::endl;
         close(clientfd);
     }
 }
 
-void LightbenchManager::record(int costTime, int reqNum) {
+void LightbenchManager::record(int costTime) {
     muduo::MutexLockGuard lockGuard(lock_);
     if (costTime < minRespTime_)
         minRespTime_.exchange(costTime);

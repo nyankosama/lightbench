@@ -28,7 +28,7 @@ namespace lightbench {
 
     private:
         void initPvQueue(int concurrentNum);
-        void record(int costTime, int reqNum);
+        void record(int costTime);
 
     private:
         std::string host_;
