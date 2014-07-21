@@ -23,10 +23,9 @@ namespace lightbench {
         void startBench(const std::string& data, int totalReqNum);
         void report();
 
-        //the following functions will be called by thread automatically
-        void benchmark(int reqNum, const std::string& data);
 
     private:
+        void benchmark(int reqNum, const std::string& data);
         void initPvQueue(int concurrentNum);
         void record(int costTime);
 
