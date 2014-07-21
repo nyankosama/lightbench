@@ -56,7 +56,6 @@ void LightbenchManager::benchmark(
             std::cerr <<  "client write error: " << strerror(errno) << std::endl;
             abort();
         }
-        //std::cout << "send data to server, id=" << completedCount_ << std::endl;
 
         ret = read(clientfd, readbuf, sizeof(readbuf));
         if (ret == -1) {
@@ -67,7 +66,6 @@ void LightbenchManager::benchmark(
         int endTime = getCurrentTimeUsec();
         record(endTime - beginTime);
 
-        //std::cout << "read data from server, id=" << completedCount_ << std::endl;
         close(clientfd);
     }
 }
@@ -108,6 +106,7 @@ void LightbenchManager::startBench(const std::string& data, int totalReqNum) {
     }
 
     std::cout << "benchmark start!" << std::endl;
+    std::cout << std::endl;
 
     for (auto thread : threadList) {
         thread->join();
