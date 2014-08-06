@@ -38,7 +38,7 @@ int main(){
         client_len = sizeof(client_address);
         client_sockfd = accept(server_sockfd, (struct sockaddr *)&client_address, &client_len);
         printf("accept client\n");
-        int n = read(client_sockfd, &ch, sizeof(512));
+        int n = read(client_sockfd, &ch, 512);
         write(client_sockfd, &ch, n);
         close(client_sockfd);
     }
