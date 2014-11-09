@@ -11,7 +11,7 @@ runlibs = list()
 runlibs.extend(staticLibs)
 runlibs.extend(dynamicLibs)
 
-env = Environment(CCFLAGS='-std=c++0x -g -p -Wall -O0')
+env = Environment(CCFLAGS='-std=c++0x -g -p -Wall')
 
 env.StaticLibrary(target = 'muduo',
         source = Glob(thirdPartyDir +'/muduo/base/*.cpp'),
@@ -26,6 +26,12 @@ env.Program(target = 'lightbench',
         CPPPATH=[srcDir, thirdPartyDir])
 
 env.Program(target = 'server', source = srcDir + '/lightbench/testserver/server.cpp',CPPPATH=[srcDir, thirdPartyDir])
+
+env.Program(
+    target = 'client', source = [srcDir + '/lightbench/testserver/testClient.cpp', srcDir + '/lightbench/bench_utils.cpp'],
+    LIBS=runlibs,
+    LIBPATH=libpath,
+    CPPPATH=[srcDir, thirdPartyDir])
 
 
 #build and run the unittest cases

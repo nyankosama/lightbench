@@ -34,10 +34,8 @@ int main(){
     listen(server_sockfd, 5);
     while(1){
         char ch[512];
-        printf("server waiting\n");
         client_len = sizeof(client_address);
         client_sockfd = accept(server_sockfd, (struct sockaddr *)&client_address, &client_len);
-        printf("accept client\n");
         int n = read(client_sockfd, &ch, sizeof(512));
         write(client_sockfd, &ch, n);
         close(client_sockfd);

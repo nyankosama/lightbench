@@ -12,7 +12,7 @@ int main(int argc, char* argv[]) {
     int port;
     std::string data;
     int requestNum;
-    int coreNum = 2;
+    int coreNum = 1;
 
     po::options_description desc("Required options");
 
