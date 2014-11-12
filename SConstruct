@@ -19,7 +19,7 @@ env.StaticLibrary(target = 'muduo',
 
 libpath = './'
 
-env.Program(target = 'lightbench',
+binCom = env.Program(target = 'lightbench',
         source = Glob(srcDir+'/lightbench/*.cpp'),
         LIBS=runlibs,
         LIBPATH=libpath,
@@ -27,12 +27,13 @@ env.Program(target = 'lightbench',
 
 env.Program(target = 'server', source = srcDir + '/lightbench/testserver/server.cpp',CPPPATH=[srcDir, thirdPartyDir])
 
-env.Program(
+testCom = env.Program(
     target = 'client', source = [srcDir + '/lightbench/testserver/testClient.cpp', srcDir + '/lightbench/bench_utils.cpp'],
     LIBS=runlibs,
     LIBPATH=libpath,
     CPPPATH=[srcDir, thirdPartyDir])
 
+Depends(testCom, binCom)
 
 #build and run the unittest cases
 testSrcList = os.listdir(testDir)
@@ -55,4 +56,4 @@ def runTest(target, source, env):
             os.system(testDir + os.path.sep + fileName)
 
 test = Command('test', [], runTest)
-Depends(test, testList)
+Depends(test, testCom)

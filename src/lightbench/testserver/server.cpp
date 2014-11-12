@@ -36,12 +36,7 @@ int main(){
         char ch[512];
         client_len = sizeof(client_address);
         client_sockfd = accept(server_sockfd, (struct sockaddr *)&client_address, &client_len);
-<<<<<<< HEAD
-        int n = read(client_sockfd, &ch, sizeof(512));
-=======
-        printf("accept client\n");
         int n = read(client_sockfd, &ch, 512);
->>>>>>> ec5df2b52f46149d6b889fa0affca17407bc525d
         write(client_sockfd, &ch, n);
         close(client_sockfd);
     }
